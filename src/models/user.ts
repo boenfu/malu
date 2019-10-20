@@ -3,9 +3,13 @@ import { Nominal } from "tslang";
 
 export type UserId = Nominal<string, "user-id">;
 
-export interface UnreadInfo {
-  user: UserId;
-  count: number;
+export interface UserChat {
+  [user: string]: {
+    id: UserId;
+    count: number;
+    recently: string;
+    updateAt: Date;
+  };
 }
 
 export interface User extends IDocument {
@@ -13,5 +17,5 @@ export interface User extends IDocument {
   username: string;
   password: string;
   csr: boolean;
-  unreadList: UnreadInfo[];
+  chat: UserChat;
 }

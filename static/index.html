@@ -7,7 +7,20 @@
     <title>Document</title>
   </head>
   <body>
+    <input id="msg" type="text" />
+    <button onclick="send()">发送</button>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.slim.js"></script>
     <script src="./client.js"></script>
+    <script>
+      function send() {
+        socket.emit(
+          "msg:send",
+          { content: msg.value, to: "5dac6cf8d169824710fc0939" },
+          console.log
+        );
+      }
+
+      socket.emit("msg:list");
+    </script>
   </body>
 </html>

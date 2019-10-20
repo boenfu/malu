@@ -11,6 +11,9 @@ export interface Config {
     uri: string;
     name: string;
   };
+  auth: {
+    autoReg: boolean;
+  };
 }
 
 export const config = (require("../.config") as Config) || {};
