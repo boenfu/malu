@@ -1,0 +1,42 @@
+{
+  "name": "malu",
+  "version": "0.1.0",
+  "main": "index.js",
+  "repository": "git@github.com:boenfu/malu.git",
+  "author": "boenfu <1997@boenfu.cn>",
+  "private": true,
+  "license": "GPL-3.0",
+  "scripts": {
+    "dev": "tsnd  --respawn --transpileOnly --no-notify ./src/app.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "koa": "^2.10.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
+    "koa-static": "^5.0.0",
+    "lodash": "^4.17.15",
+    "mongodb": "^3.3.3",
+    "node-fetch": "^2.6.0",
+    "socket.io": "^2.3.0",
+    "tslang": "^0.1.17"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.0.51",
+    "@types/koa-bodyparser": "^4.3.0",
+    "@types/koa-router": "^7.0.42",
+    "@types/koa-static": "^4.0.1",
+    "@types/lodash": "^4.14.144",
+    "@types/mongodb": "^3.3.6",
+    "@types/node-fetch": "^2.5.2",
+    "@types/socket.io": "^2.1.4",
+    "@typescript-eslint/eslint-plugin": "^2.4.0",
+    "@typescript-eslint/parser": "^2.4.0",
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.4.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "prettier": "^1.18.2",
+    "ts-node-dev": "^1.0.0-pre.43",
+    "typescript": "^3.6.4"
+  }
+}
