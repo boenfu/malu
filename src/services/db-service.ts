@@ -20,21 +20,26 @@ export class DBService {
     this.ready = this.initialize(options);
   }
 
-  collection<TName extends keyof NameToCollectionDocumentSchemaDict>(
+  async collection<TName extends keyof NameToCollectionDocumentSchemaDict>(
     name: TName
-  ): Collection<NameToCollectionDocumentSchemaDict[TName]> {
+  ): Promise<Collection<NameToCollectionDocumentSchemaDict[TName]>> {
+    await this.ready;
     return this.db.collection(name);
   }
 
   private async initialize({ uri, name }: DBServiceOptions): Promise<void> {
-    const client = await MongoClient.connect(uri, {
-      useUnifiedTopology: true,
-      useNewUrlParser: true,
-      ignoreUndefined: true
-    });
+    try {
+      const client = await MongoClient.connect(uri, {
+        useUnifiedTopology: true,
+        useNewUrlParser: true,
+        ignoreUndefined: true
+      });
 
-    this.db = client.db(name);
+      this.db = client.db(name);
 
-    console.info(`MONGODB RUNNING ON ${uri} ...`);
+      console.info(`MONGODB RUNNING ON ${uri} ...`);
+    } catch (error) {
+      console.info(`MONGODB CONNECT TIMEOUT ${uri} ...`);
+    }
   }
 }

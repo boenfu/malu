@@ -3,10 +3,11 @@ import { Socket } from "socket.io";
 
 import { SocketService, SocketEventListener, SocketId } from "./socket-service";
 import { DBService } from "./db-service";
-import { UserId, User, Message } from "../models";
+import { UserId, User, Message, MessageType } from "../models";
 import _ from "lodash";
 
 export interface MessageSendOptions {
+  type: MessageType;
   content: string;
   to?: UserId;
 }
@@ -62,13 +63,13 @@ export class MessageService {
         user: { id: from, inChatUser }
       } = info;
 
-      const { content, to = inChatUser } = data;
+      const { content, to = inChatUser, type } = data;
 
       if (!to) {
         return callback(false);
       }
 
-      const usersCollection = this.dbService.collection("users");
+      const usersCollection = await this.dbService.collection("users");
 
       const { value: user } = await usersCollection.findOneAndUpdate(
         buildUserFilterQuery(to),
@@ -79,14 +80,14 @@ export class MessageService {
         return;
       }
 
-      const messagesCollection = this.dbService.collection("messages");
+      const messagesCollection = await this.dbService.collection("messages");
 
       const {
         ops: [newMessage]
       } = await messagesCollection.insertOne({
-        _id: new ObjectId(),
         from,
         to,
+        type,
         content,
         unread: true,
         createAt: now
@@ -119,13 +120,27 @@ export class MessageService {
       return;
     }
 
-    const usersCollection = this.dbService.collection("users");
-
-    const {
-      user: { id }
-    } = info;
+    const usersCollection = await this.dbService.collection("users");
 
     //TODO
+
+    // const user = await usersCollection.findOne(buildUserFilterQuery(id));
+
+    const a = await usersCollection.aggregate([
+      {
+        $lookup: {
+          from: "users",
+          localField: "chat.$.id",
+          foreignField: "_id",
+          as: "users"
+        }
+      },
+      {
+        $project: { account: 1, username: 1 }
+      }
+    ]);
+
+    console.log(JSON.stringify(a.toArray()));
   };
 
   private onGetHistory: SocketEventListener = async (socket): Promise<void> => {
@@ -144,7 +159,8 @@ export class MessageService {
 
   private onInChat: SocketEventListener = async (
     socket,
-    data: MessageInChatOptions
+    data: MessageInChatOptions,
+    callback
   ): Promise<void> => {
     const info = this.socketService.getSocketInfoWithLogged(socket);
 
@@ -159,7 +175,7 @@ export class MessageService {
 
       const { to } = Object(data);
 
-      const usersCollection = this.dbService.collection("users");
+      const usersCollection = await this.dbService.collection("users");
 
       const user = await usersCollection.findOne(buildUserFilterQuery(to));
 
@@ -181,7 +197,11 @@ export class MessageService {
       newInfo.user.inChatUser = to;
 
       this.socketService.updateSocketInfo(socket.id as SocketId, newInfo);
-    } catch (error) {}
+
+      callback && callback(true);
+    } catch (error) {
+      callback && callback(false);
+    }
   };
 
   private onOutChat: SocketEventListener = async (socket): Promise<void> => {

@@ -4,7 +4,9 @@ import {
   HttpService,
   SocketService,
   MessageService,
-  AuthService
+  AuthService,
+  ManagerService,
+  UserService
 } from "./services";
 import { config } from "./config";
 import { buildRoutes } from "./route";
@@ -15,12 +17,13 @@ export type Services = {
   httpService: HttpService;
   socketService: SocketService;
 };
+export const managerService = new ManagerService();
 
 export const apiService = new APIService();
 
 export const dbService = new DBService(config.mongo);
 
-const router = buildRoutes({ apiService, dbService });
+const router = buildRoutes();
 
 export const httpService = new HttpService(router, config.http);
 
@@ -33,3 +36,4 @@ export const socketService = new SocketService(
 );
 
 export const messageService = new MessageService(socketService, dbService);
+export const userService = new UserService();

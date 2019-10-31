@@ -8,7 +8,7 @@ module.exports = {
     path: '/ws'
   },
   mongo: {
-    uri: `mongodb://localhost:27017`,
+    uri: `mongodb://localhost:47017`,
     name: 'malu'
   },
   auth: {

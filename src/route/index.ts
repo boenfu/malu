@@ -1,7 +1,8 @@
 import Router from "koa-router";
-import { Services } from "../service-entrances";
 
-export function buildRoutes({  }: Partial<Services>): Router {
-  return new Router();
-  // .use(buildCommonRoute(localService).routes())
+export function buildRoutes(): Router {
+  return new Router().all("*", async (ctx, next) => {
+    console.log(ctx.path, new Date().toLocaleString());
+    await next();
+  });
 }

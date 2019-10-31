@@ -1,3 +1,4 @@
+import md5 from "md5";
 import { DBService } from "./db-service";
 import { User } from "../models";
 import { ObjectId } from "mongodb";
@@ -23,9 +24,11 @@ export class AuthService {
       return false;
     }
 
-    const collection = this.dbService.collection("users");
+    password = md5(password);
 
-    const user = await collection.findOne({
+    const userCollection = await this.dbService.collection("users");
+
+    const user = await userCollection.findOne({
       account,
       csr
     });
@@ -42,7 +45,7 @@ export class AuthService {
 
     const {
       ops: [newUser]
-    } = await collection.insertOne({
+    } = await userCollection.insertOne({
       _id: new ObjectId(),
       account,
       username: account,
