@@ -18,7 +18,7 @@
     "lodash": "^4.17.15",
     "md5": "^2.2.1",
     "mongodb": "^3.3.3",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "socket.io": "^2.3.0",
     "tslang": "^0.1.17"
   },
